@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="decoder.cpp" />
+    <ClCompile Include="libqrcode\bitstream.c">
+      <Filter>libqrencode</Filter>
+    </ClCompile>
+    <ClCompile Include="libqrcode\mask.c">
+      <Filter>libqrencode</Filter>
+    </ClCompile>
+    <ClCompile Include="libqrcode\mmask.c">
+      <Filter>libqrencode</Filter>
+    </ClCompile>
+    <ClCompile Include="libqrcode\mqrspec.c">
+      <Filter>libqrencode</Filter>
+    </ClCompile>
+    <ClCompile Include="libqrcode\qrencode.c">
+      <Filter>libqrencode</Filter>
+    </ClCompile>
+    <ClCompile Include="libqrcode\qrinput.c">
+      <Filter>libqrencode</Filter>
+    </ClCompile>
+    <ClCompile Include="libqrcode\qrspec.c">
+      <Filter>libqrencode</Filter>
+    </ClCompile>
+    <ClCompile Include="libqrcode\rscode.c">
+      <Filter>libqrencode</Filter>
+    </ClCompile>
+    <ClCompile Include="libqrcode\split.c">
+      <Filter>libqrencode</Filter>
+    </ClCompile>
+    <ClCompile Include="encoder.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="coder.h" />
+    <ClInclude Include="libqrcode\bitstream.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\config.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\mask.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\mmask.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\mqrspec.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\qrencode.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\qrencode_inner.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\qrinput.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\qrspec.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\rscode.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+    <ClInclude Include="libqrcode\split.h">
+      <Filter>libqrencode</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="libqrencode">
+      <UniqueIdentifier>{1fe2df43-a2ee-4bd4-ab00-bb6b63ca82c2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

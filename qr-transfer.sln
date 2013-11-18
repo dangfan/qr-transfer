@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "receiver", "receiver\receiver.vcxproj", "{7C2573A1-1727-4ADF-9E38-D1A0A17EEB09}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "core", "core\core.vcxproj", "{A77F5D30-841B-4767-9AC7-313EAD378B37}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sender", "sender\sender.vcxproj", "{860DBC32-EFF3-444C-A7AF-7F478FCF7E8D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C2573A1-1727-4ADF-9E38-D1A0A17EEB09}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7C2573A1-1727-4ADF-9E38-D1A0A17EEB09}.Debug|Win32.Build.0 = Debug|Win32
+		{7C2573A1-1727-4ADF-9E38-D1A0A17EEB09}.Release|Win32.ActiveCfg = Release|Win32
+		{7C2573A1-1727-4ADF-9E38-D1A0A17EEB09}.Release|Win32.Build.0 = Release|Win32
+		{A77F5D30-841B-4767-9AC7-313EAD378B37}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A77F5D30-841B-4767-9AC7-313EAD378B37}.Debug|Win32.Build.0 = Debug|Win32
+		{A77F5D30-841B-4767-9AC7-313EAD378B37}.Release|Win32.ActiveCfg = Release|Win32
+		{A77F5D30-841B-4767-9AC7-313EAD378B37}.Release|Win32.Build.0 = Release|Win32
+		{860DBC32-EFF3-444C-A7AF-7F478FCF7E8D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{860DBC32-EFF3-444C-A7AF-7F478FCF7E8D}.Debug|Win32.Build.0 = Debug|Win32
+		{860DBC32-EFF3-444C-A7AF-7F478FCF7E8D}.Release|Win32.ActiveCfg = Release|Win32
+		{860DBC32-EFF3-444C-A7AF-7F478FCF7E8D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
