@@ -51,7 +51,7 @@ void connect(IOController &controller, short num_packets, int size) {
 				start = end;
 			}
 		}
-		if (waitKey(10)) break;
+		if (waitKey(10) == 32) break;
 	}
 }
 
