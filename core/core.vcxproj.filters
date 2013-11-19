@@ -30,6 +30,7 @@
       <Filter>libqrencode</Filter>
     </ClCompile>
     <ClCompile Include="encoder.cpp" />
+    <ClCompile Include="io.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="coder.h" />
@@ -66,6 +67,7 @@
     <ClInclude Include="libqrcode\split.h">
       <Filter>libqrencode</Filter>
     </ClInclude>
+    <ClInclude Include="io.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libqrencode">

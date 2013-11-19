@@ -1,86 +1,97 @@
 #include <opencv2/highgui/highgui.hpp>
-#include <opencv2/opencv.hpp>
-#include "coder.h"
 #include <cstdio>
 #include <cmath>
+#include <ctime>
+#include <vector>
+#include "coder.h"
+#include "io.h"
 
 using namespace std;
 using namespace cv;
-using namespace Coder;
 
-uchar *read_file(const char* filename, int& size, int& num_packets) {
+vector<int> lst;
+
+uchar *read_file(const char *filename, int &size, int &num_packets) {
 	FILE *fd = fopen(filename, "rb");
 	
 	fseek(fd, 0, SEEK_END);
 	size = ftell(fd);
 	fseek(fd, 0, SEEK_SET);
 
-	num_packets = (int) ceil((double) size / DATA);
-	uchar *buf =  new uchar[DATA * num_packets];
-	memset(buf, 0, DATA * num_packets);
+	num_packets = (int) ceil((double) size / MAX_DATA);
+	uchar *buf =  new uchar[MAX_DATA * num_packets];
+	memset(buf, 0, MAX_DATA * num_packets);
 	
 	for (int i = 0; i != num_packets; ++i) {
-		fread(buf + (i * DATA), sizeof(uchar), DATA, fd);
+		fread(buf + (i * MAX_DATA), sizeof(uchar), MAX_DATA, fd);
 	}
 
 	fclose(fd);
 	return buf;
 }
 
+void connect(IOController &controller, short num_packets, int size) {
+	frame frame_a, frame_b;
+	frame_a.type = frame_type::INIT;
+	frame_a.seq = num_packets;
+	*(int *)frame_a.data = size;
+	frame_b.type = frame_type::INIT;
+	controller.send(frame_a, frame_b);
+
+	int counter = 0;
+	time_t start, end;
+	time(&start);
+	while (true) {
+		controller.receive(frame_a, frame_b);
+		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
+			if (++counter == 10) {
+				time(&end);
+				controller.showfps(difftime(end, start));
+				counter = 0;
+				start = end;
+			}
+		}
+		if (waitKey(10)) break;
+	}
+}
+
+void send(IOController &controller, uchar *data) {
+	for (vector<int>::iterator p = lst.begin(); p != lst.end(); ++p) {
+		frame frame_a, frame_b;
+		frame_a.type = frame_type::DATA;
+		frame_a.seq = *p;
+		memcpy(frame_a.data, data + *p * MAX_DATA, MAX_DATA);
+
+		if (++p == lst.end()) {
+			frame_b.type = frame_type::EXTRA;
+			controller.send(frame_a, frame_b);
+			return;
+		} else {
+			frame_b.type = frame_type::DATA;
+			frame_b.seq = *p;
+			memcpy(frame_b.data, data + *p * MAX_DATA, MAX_DATA);
+			controller.send(frame_a, frame_b);
+		}
+
+		waitKey(100);
+	}
+}
+
 int main() {
 	int size, num_packets;
 	uchar *data = read_file("msys.ico", size, num_packets);
-	Mat region(1080, 1920, CV_8UC3), m;
-	memset(region.data, 255, 1920*1080*3);
-	uchar buf[PACK];
-
-	// init frame
-	memset(buf, 0, PACK);
-	*buf = TYPE_INIT;
-	*((short *) (buf + TYPE)) = (short) num_packets;
-	*((int *) (buf + HEADER)) = size;
-	encode(buf, PACK, m, 10);
-	Mat dst = region(Rect(100, 135, m.cols, m.rows));
-	m.copyTo(dst);
-	
-	namedWindow("sender", CV_WINDOW_NORMAL);
-	setWindowProperty("sender", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
-	imshow("sender", region);
-
+	IOController controller(640, 480);
+	connect(controller, num_packets, size);
 	waitKey(0);
 
-	for (int i = 0; i < num_packets; ++i) {
-		memset(region.data, 255, 1920*1080*3);
+	for (int i = 0; i != num_packets; ++i)
+		lst.push_back(i);
 
-		// left frame
-		*buf = TYPE_DATA;
-		*((short *) (buf + TYPE)) = (short) i;
-		memcpy(buf + HEADER, data + (i * DATA), DATA);
-		encode(buf, PACK, m, 10);
-		//dst = region(Rect(500, 135, m.cols, m.rows));
-		dst = region(Rect(100, 135, m.cols, m.rows));
-		m.copyTo(dst);
-
-		// right frame
-		if (++i == num_packets) { // no extra frame
-			memset(buf, 0, PACK);
-			*((short *) buf) = TYPE_LAST_EXTRA;
-		} else {
-			*buf = TYPE_DATA;
-			*((short *) (buf + TYPE)) = (short) i;
-			memcpy(buf + HEADER, data + (i * DATA), DATA);
-		}
-		encode(buf, PACK, m, 10);
-		dst = region(Rect(1000, 135, m.cols, m.rows));
-		m.copyTo(dst);
-	
-		setWindowProperty("sender", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
-		imshow("sender", region);
-
-		if (waitKey(100) == 27) break;
+	while (true) {
+		send(controller, data);
+		break;
 	}
 
-	waitKey(0);
 	delete[] data;
 	return 0;
 }

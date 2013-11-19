@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="decoder.cpp" />
     <ClCompile Include="encoder.cpp" />
+    <ClCompile Include="io.cpp" />
     <ClCompile Include="libqrcode\bitstream.c" />
     <ClCompile Include="libqrcode\mask.c" />
     <ClCompile Include="libqrcode\mmask.c" />
@@ -25,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="coder.h" />
+    <ClInclude Include="io.h" />
     <ClInclude Include="libqrcode\bitstream.h" />
     <ClInclude Include="libqrcode\config.h" />
     <ClInclude Include="libqrcode\mask.h" />
