@@ -39,9 +39,8 @@ public:
 private:
 	cv::VideoCapture cap;
 	cv::Mat screen;
+	cv::Mat empty;
 	Decoder decoder;
-	int width;
-	int height;
 	void split(cv::Mat &m, cv::Mat &l, cv::Mat &r);
 };
 

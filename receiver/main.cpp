@@ -22,19 +22,19 @@ void connect(IOController &controller, int &size, int &num_pkt) {
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
 			if (++counter == 10) {
 				time(&end);
-				controller.showfps(difftime(end, start));
+				controller.showfps(10 / difftime(end, start));
 				counter = 0;
 				start = end;
 			}
 			num_pkt = frame_a.seq;
 			size = *(int *)frame_a.data;
 		}
-		if (waitKey(10)) break;
+		if (waitKey(10) == 32) break;
 	}
 }
 
 int main() {
-	IOController controller(1280, 720);
+	IOController controller(640, 480);
 	int size, num_pkts;
 	connect(controller, size, num_pkts);
 
