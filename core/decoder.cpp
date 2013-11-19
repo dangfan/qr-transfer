@@ -1,6 +1,7 @@
 #include "coder.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <zbar.h>
 #include <cstdlib>
 #include <iostream>
@@ -11,36 +12,38 @@ namespace Coder {
 		: debug(debug) {
 			if (debug) {
 				cv::namedWindow("red", CV_WINDOW_AUTOSIZE);
-				cv::namedWindow("green", CV_WINDOW_AUTOSIZE);
+				cv::namedWindow("blue", CV_WINDOW_AUTOSIZE);
 			}
 	}
 
 	void Decoder::get_red_frame(cv::Mat &m) {
 		auto p = m.data;
 		for (int i = 0; i != m.cols * m.rows; ++i) {
-			if (*(p+1) > WHITE_THRESHOLD) *(p+1) = 255;
-			else if (*p < 30 || *p > 150) *(p+1) = 0; //R
-			else if (*p > 30  && *p < 80) *(p+1) = 255; //G
-			else if (*(p+1) < 80) *(p+1) = 0; //B
+			if (*(p+1) > WHITE_THRESHOLD) *(p+1) = 255;        // Too bright
+			else if (*(p+1) < BLACK_THRESHOLD) *(p+1) = 0;     // Too dark
+			else if (*p < 30 || *p > 150) *(p+1) = 0;          // Red
+			else if (*p > 80) *(p+1) = 255;                    // Blue
 			p += 3;
 		}
 		cvtColor(m, m, CV_HLS2BGR);
-		if (debug) cv::imshow("red", m);
 		cvtColor(m, m, CV_BGR2GRAY);
+		cv::medianBlur(m, m, 1);
+		if (debug) cv::imshow("red", m);
 	}
 
-	void Decoder::get_green_frame(cv::Mat &m) {
+	void Decoder::get_blue_frame(cv::Mat &m) {
 		auto p = m.data;
 		for (int i = 0; i != m.cols * m.rows; ++i) {
-			if (*(p+1) > WHITE_THRESHOLD) *(p+1) = 255;
-			else if (*p < 30 || *p > 150) *(p+1) = 255; //R
-			else if (*p > 30  && *p < 80) *(p+1) = 0; //G
-			else if (*(p+1) < 80) *(p+1) = 0; //B
+			if (*(p+1) > WHITE_THRESHOLD) *(p+1) = 255;        // Too bright
+			else if (*(p+1) < BLACK_THRESHOLD) *(p+1) = 0;     // Too dark
+			else if (*p < 30 || *p > 150) *(p+1) = 255;        // Red
+			else if (*p > 80) *(p+1) = 0;                      // Blue
 			p += 3;
 		}
 		cvtColor(m, m, CV_HLS2BGR);
-		if (debug) cv::imshow("green", m);
 		cvtColor(m, m, CV_BGR2GRAY);
+		cv::medianBlur(m, m, 1);
+		if (debug) cv::imshow("blue", m);
 	}
 
 	size_t Decoder::get_data(zbar::Image& img, uchar *buf) {
@@ -56,9 +59,9 @@ namespace Coder {
 
 		cvtColor(frame, frame, CV_BGR2HLS);	
 		auto red = frame.clone();
-		auto green = frame.clone();
+		auto blue = frame.clone();
 		get_red_frame(red);
-		get_green_frame(green);
+		get_blue_frame(blue);
 
 		if (debug) cvtColor(frame, frame, CV_HLS2BGR);
 
@@ -70,18 +73,16 @@ namespace Coder {
 			return 0;
 		}
 
-		zbar::Image greenImage(green.cols, green.rows, "Y800", green.data, green.cols * green.rows);
-		scanner.scan(greenImage);
-		size_t len_green = get_data(greenImage, tmp + len_red);
-		if (!len_green) {
+		zbar::Image blueImage(blue.cols, blue.rows, "Y800", blue.data, blue.cols * blue.rows);
+		scanner.scan(blueImage);
+		size_t len_blue = get_data(blueImage, tmp + len_red);
+		if (!len_blue) {
 			delete[] tmp;
 			return 0;
 		}
 
 		LPWSTR wbuf = new WCHAR[length];
-		int len = MultiByteToWideChar(CP_UTF8, 0, (LPCCH) tmp, len_red + len_green, wbuf, length);
-		if (!len) return 0;
-
+		int len = MultiByteToWideChar(CP_UTF8, 0, (LPCCH) tmp, len_red + len_blue, wbuf, length);
 		for (int i = 0; i != len; ++i) {
 			buf[i] = (uchar) wbuf[i];
 		}

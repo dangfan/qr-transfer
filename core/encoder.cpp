@@ -10,23 +10,22 @@ inline void set_color(cv::Mat &m, int r, int c, int size, int color) {
 			case 0:	// white
 				*p = *(p+1) = *(p+2) = 255;
 				break;
-			case 1: // green
-				*p = 0; *(p+1) = 255; *(p+2) = 0;
+			case 1: // blue
+				*p = 0xff; *(p+1) = 0xaa; *(p+2) = 0;
 				break;
 			case 2: // red
-				*p = 0; *(p+1) = 0; *(p+2) = 255;
+				*p = 0; *(p+1) = 0x55; *(p+2) = 0xff;
 				break;
-			case 3: // blue
-				*p = 255; *(p+1) = 0; *(p+2) = 0;
+			case 3: // black
+			case 4:
+				*p = 0; *(p+1) = 0; *(p+2) = 0;
 				break;
-			case 4: // black
-				*p = *(p+1) = *(p+2) = 0;
 			}
 		}
 	}
 }
 
-int encode(uchar *buf, size_t length, cv::Mat &m, int size) {
+int encode_color(uchar *buf, size_t length, cv::Mat &m, int size) {
 	if (length & 1) return -1;
 
 	length >>= 1;
