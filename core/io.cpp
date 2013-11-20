@@ -51,7 +51,7 @@ void IOController::send(frame &left, frame &right) {
 void IOController::showmsg(const char *msg) {
 	Mat block = screen(Rect(0, 0, 1920, TOP));
 	empty.copyTo(block);
-	putText(screen, msg, Point(800, 0), 0, 3, Scalar(0), 5);
+	putText(screen, msg, Point(800, 60), 0, 2, Scalar(0), 5);
 	imshow("w", screen);
 	waitKey(1);
 }

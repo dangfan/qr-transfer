@@ -14,7 +14,6 @@ inline void set_color(cv::Mat &m, int r, int c, int size, bool black) {
 int encode_black(uchar *buf, size_t length, cv::Mat &m, int size) {
 	auto qrcode = QRcode_encodeData(length, buf, 0, QR_ECLEVEL_L);
 	int width = qrcode->width;
-	std::cout << width << std::endl;
 
 	m = cv::Mat(width * size, width * size, CV_8U);
 
