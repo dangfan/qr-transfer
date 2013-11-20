@@ -91,10 +91,12 @@ int main() {
 			controller.receive(frame_a, frame_b);
 			if (frame_a.type == frame_type::DATA) {
 				fill_data(frame_a, data, received);
+			} else if (frame_a.type == frame_type::END) {
+				break;
 			}
 			if (frame_b.type == frame_type::DATA) {
 				fill_data(frame_b, data, received);
-			} else if (frame_b.type == frame_type::EXTRA) {
+			} else if (frame_b.type == frame_type::END) {
 				break;
 			}
 		}

@@ -14,7 +14,7 @@ const int MAX_PKT = QR_SIZE / 2;
 const int MAX_PKT = QR_SIZE;
 #endif
 
-enum class frame_type : unsigned char { INIT, DATA, ACK, EXTRA, MISS };
+enum class frame_type : unsigned char { INIT, DATA, ACK, END, MISS };
 typedef unsigned short seq_nr;
 typedef unsigned char uchar;
 const int MAX_DATA = MAX_PKT - sizeof(frame_type) - sizeof(seq_nr);
