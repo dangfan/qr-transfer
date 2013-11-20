@@ -10,6 +10,12 @@ using namespace std;
 using namespace cv;
 
 vector<int> lst;
+bool ready = false;
+
+void onMouse(int event, int x, int y, int flags, void*) {
+	if (event != EVENT_LBUTTONDOWN) return;
+	ready = true;
+}
 
 uchar *read_file(const char *filename, int &size, int &num_packets) {
 	FILE *fd = fopen(filename, "rb");
@@ -41,7 +47,7 @@ void connect(IOController &controller, short num_packets, int size) {
 	int counter = 0;
 	time_t past[20], now;
 	memset(past, 0, sizeof(past));
-	while (true) {
+	while (!ready) {
 		controller.receive(frame_a, frame_b);
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
 			time(&now);
@@ -51,11 +57,11 @@ void connect(IOController &controller, short num_packets, int size) {
 				counter = 0;
 			}
 		}
-		if (waitKey(5) == 32) break;
+		waitKey(10);
 	}
 }
 
-void send(IOController &controller, uchar *data) {
+bool send(IOController &controller, uchar *data) {
 	for (vector<int>::iterator p = lst.begin(); p != lst.end(); ++p) {
 		frame frame_a, frame_b;
 		frame_a.type = frame_type::DATA;
@@ -65,7 +71,7 @@ void send(IOController &controller, uchar *data) {
 		if (++p == lst.end()) {
 			frame_b.type = frame_type::EXTRA;
 			controller.send(frame_a, frame_b);
-			return;
+			break;
 		} else {
 			frame_b.type = frame_type::DATA;
 			frame_b.seq = *p;
@@ -75,21 +81,42 @@ void send(IOController &controller, uchar *data) {
 
 		waitKey(100);
 	}
+	return !lst.empty();
+}
+
+void setList(frame &f) {
+	short len = f.seq;
+	lst.clear();
+	for (int i = 0; i != len; ++i) {
+		lst.push_back(*((short *) f.data + i));
+	}
 }
 
 int main() {
 	int size, num_packets;
 	uchar *data = read_file("msys.ico", size, num_packets);
+
 	IOController controller(640, 480);
+	setMouseCallback("w", onMouse);
 	connect(controller, num_packets, size);
-	waitKey(0);
 
 	for (int i = 0; i != num_packets; ++i)
 		lst.push_back(i);
 
+	frame frame_a, frame_b;
+
 	while (true) {
-		send(controller, data);
-		break;
+		if (!send(controller, data)) break;
+		while (true) {
+			controller.receive(frame_a, frame_b);
+			if (frame_a.type == frame_type::ACK) {
+				setList(frame_a);
+				break;
+			} else if (frame_b.type == frame_type::ACK) {
+				setList(frame_b);
+				break;
+			}
+		}
 	}
 
 	delete[] data;

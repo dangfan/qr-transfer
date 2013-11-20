@@ -36,6 +36,7 @@ public:
 	void receive(frame &left, frame &right);
 	void send(frame &left, frame &right);
 	void showfps(double f, int counter);
+	void showtime(double time);
 private:
 	cv::VideoCapture cap;
 	cv::Mat screen;

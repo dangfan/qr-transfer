@@ -55,3 +55,11 @@ void IOController::showfps(double fps, int counter) {
 	putText(screen, text, Point(800, 100), 0, 3, Scalar(0), 5);
 	imshow("w", screen);
 }
+
+void IOController::showtime(double time) {
+	char text[10];
+	sprintf(text, "%.2fs", time);
+	memset(screen.data, 0xff, 1080 * 1920);
+	putText(screen, text, Point(800, 400), 0, 5, Scalar(0), 8);
+	imshow("w", screen);
+}
