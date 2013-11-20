@@ -35,7 +35,7 @@ public:
 	IOController(int width, int height);
 	void receive(frame &left, frame &right);
 	void send(frame &left, frame &right);
-	void showfps(double f, int counter);
+	void showmsg(const char *msg);
 	void showtime(double time);
 private:
 	cv::VideoCapture cap;

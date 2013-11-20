@@ -46,12 +46,14 @@ void connect(IOController &controller, short num_packets, int size) {
 
 	int counter = 0;
 	time_t past[20], now;
+	char text[20];
 	memset(past, 0, sizeof(past));
 	while (!ready) {
 		controller.receive(frame_a, frame_b);
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
 			time(&now);
-			controller.showfps(20 / difftime(now, past[counter]), counter);
+			sprintf(text, "%.2f fps, %d", 20 / difftime(now, past[counter]), counter);
+			controller.showmsg(text);
 			past[counter] = now;
 			if (++counter == 20) {
 				counter = 0;
@@ -108,6 +110,11 @@ int main() {
 	setMouseCallback("w", onMouse);
 	connect(controller, num_packets, size);
 
+	controller.showmsg("Sending");
+
+	time_t start, end;
+	time(&start);
+
 	for (int i = 0; i != num_packets; ++i)
 		lst.push_back(i);
 
@@ -126,6 +133,10 @@ int main() {
 			}
 		}
 	}
+	
+	time(&end);
+	controller.showtime(difftime(end, start));
+	waitKey();
 
 	delete[] data;
 	return 0;
