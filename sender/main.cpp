@@ -111,11 +111,11 @@ int main(int argc, char* args[]) {
 	fps = 1000 / atoi(args[4]);
 
 	int size, num_packets;
-	uchar *data = read_file(args[0], size, num_packets);
+	uchar *data = read_file(args[1], size, num_packets);
 
 	IOController controller(width, height);
 	setMouseCallback("w", onMouse);
-	connect(controller, num_packets, size, args[0]);
+	connect(controller, num_packets, size, args[1]);
 
 	controller.showmsg("Sending");
 
@@ -136,10 +136,8 @@ int main(int argc, char* args[]) {
 				break;
 			}
 		}
+		//if (waitKey(1) == 27) break;
 	}
-	
-	controller.showmsg("Finished");
-	waitKey();
 
 	delete[] data;
 	return 0;
