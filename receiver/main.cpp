@@ -99,7 +99,7 @@ int main(int argc, char* args[]) {
 
 	controller.showmsg("Receiving");
 
-	frame_a.type = frame_type::ACK;
+	frame_a.type = frame_type::METAACK;
 	controller.send(frame_a, frame_a);
 
 	uchar *data = new uchar[size];

@@ -3,6 +3,7 @@
 #include <cmath>
 #include <ctime>
 #include <vector>
+#include <iostream>
 #include "coder.h"
 #include "io.h"
 
@@ -43,16 +44,15 @@ void calibrate(IOController &controller) {
 	controller.send(frame_a, frame_a);
 
 	int counter = 0;
-	time_t past[20], now;
+	time_t past[20];
 	char text[20];
 	memset(past, 0, sizeof(past));
 	while (!ready) {
 		controller.receive(frame_a, frame_b);
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
-			time(&now);
-			sprintf(text, "%.2f fps, %d", 20 / difftime(now, past[counter]), counter);
+			sprintf(text, "%.2f fps, %d", 20. / (clock() - past[counter]) * CLK_TCK, counter);
 			controller.showmsg(text);
-			past[counter] = now;
+			past[counter] = clock();
 			if (++counter == 20) {
 				counter = 0;
 			}
@@ -108,7 +108,7 @@ void send_meta(IOController &controller, int num_pkts, int size, char *filename)
 	controller.send(a, a);
 	while (true) {
 		controller.receive(a, b);
-		if (a.type == frame_type::ACK || b.type == frame_type::ACK) {
+		if (a.type == frame_type::METAACK || b.type == frame_type::METAACK) {
 			break;
 		}
 	}
@@ -146,10 +146,10 @@ int main(int argc, char* args[]) {
 				setList(frame_b);
 				break;
 			}
-			if (waitKey(1) == 27) {
-				delete[] data;
-				return 0;
-			}
+			//if (waitKey(1) == 27) {
+			//	delete[] data;
+			//	return 0;
+			//}
 		}
 	}
 }
