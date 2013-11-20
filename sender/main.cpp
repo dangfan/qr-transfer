@@ -146,10 +146,10 @@ int main(int argc, char* args[]) {
 				setList(frame_b);
 				break;
 			}
+			if (waitKey(1) == 27) {
+				delete[] data;
+				return 0;
+			}
 		}
-		if (waitKey(1) == 27) break;
 	}
-
-	delete[] data;
-	return 0;
 }
