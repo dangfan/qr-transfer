@@ -5,13 +5,27 @@
 #include "coder.h"
 
 #define BLACK_MODE
+#define VERSION 18
 
-#define QR_SIZE 1172
+#if VERSION == 16
+#define QR_SIZE 586
+#elif VERSION == 17
+#define QR_SIZE 644
+#elif VERSION == 18
+#define QR_SIZE 718
+#elif VERSION == 19
+#define QR_SIZE 792
+#endif
+
+const int WIDTH = (VERSION * 4 + 17) * 10;
+const int TOP = (1080 - WIDTH) / 2;
+const int LEFT = (1920 - 2 * WIDTH) / 3;
+const int LEFT2 = LEFT * 2 + WIDTH;
 
 #ifdef BLACK_MODE
-const int MAX_PKT = QR_SIZE / 2;
-#else
 const int MAX_PKT = QR_SIZE;
+#else
+const int MAX_PKT = QR_SIZE * 2;
 #endif
 
 enum class frame_type : unsigned char { INIT, DATA, ACK, END, MISS, META, METAACK };

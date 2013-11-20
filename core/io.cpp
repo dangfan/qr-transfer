@@ -8,20 +8,20 @@ using namespace std;
 using namespace cv;
 
 IOController::IOController(int width, int height)
-	: cap(0), screen(1080, 1920, CV_8U), empty(135, 1920, CV_8U) {
+	: cap(0), screen(1080, 1920, CV_8U), empty(TOP, 1920, CV_8U) {
 	cap.set(CV_CAP_PROP_FRAME_WIDTH, width);
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT, height);
 	
 	memset(screen.data, 0xff, 1080 * 1920);
-	memset(empty.data, 0xff, 135 * 1920);
+	memset(empty.data, 0xff, TOP * 1920);
 	namedWindow("w", CV_WINDOW_NORMAL);
 	setWindowProperty("w", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 	imshow("w", screen);
 }
 
 void IOController::split(Mat &m, Mat &l, Mat &r) {
-	l = m(Rect(0, 0, m.cols / 2, m.rows));
-	r = m(Rect(m.cols / 2, 0, m.cols / 2, m.rows));
+	l = m(Rect(0, 0, m.cols / 2 + 50, m.rows));
+	r = m(Rect(m.cols / 2 - 50, 0, m.cols / 2 + 50, m.rows));
 }
 
 void IOController::receive(frame &left, frame &right) {
@@ -38,20 +38,20 @@ void IOController::receive(frame &left, frame &right) {
 
 void IOController::send(frame &left, frame &right) {
 	Mat m, dst;
-	encode_black((uchar *)&left, MAX_PKT, m, 10);
-	dst = screen(Rect(100, 135, m.cols, m.rows));
+	encode_black((uchar *)&left, MAX_PKT, m);
+	dst = screen(Rect(LEFT, TOP, m.cols, m.rows));
 	m.copyTo(dst);
-	encode_black((uchar *)&right, MAX_PKT, m, 10);
-	dst = screen(Rect(1000, 135, m.cols, m.rows));
+	encode_black((uchar *)&right, MAX_PKT, m);
+	dst = screen(Rect(LEFT2, TOP, m.cols, m.rows));
 	m.copyTo(dst);
 	imshow("w", screen);
 	waitKey(1);
 }
 
 void IOController::showmsg(const char *msg) {
-	Mat block = screen(Rect(0, 0, 1920, 135));
+	Mat block = screen(Rect(0, 0, 1920, TOP));
 	empty.copyTo(block);
-	putText(screen, msg, Point(800, 100), 0, 3, Scalar(0), 5);
+	putText(screen, msg, Point(800, 0), 0, 3, Scalar(0), 5);
 	imshow("w", screen);
 	waitKey(1);
 }
