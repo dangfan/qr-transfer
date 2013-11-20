@@ -74,6 +74,7 @@ bool send(IOController &controller, uchar *data) {
 		if (++p == lst.end()) {
 			frame_b.type = frame_type::END;
 			controller.send(frame_a, frame_b);
+			waitKey(fps);
 			return true;
 		} else {
 			frame_b.type = frame_type::DATA;
@@ -88,6 +89,7 @@ bool send(IOController &controller, uchar *data) {
 	frame_a.type = frame_type::END;
 	frame_b.type = frame_type::END;
 	controller.send(frame_a, frame_b);
+	waitKey(fps);
 
 	return true;
 }

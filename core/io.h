@@ -5,7 +5,7 @@
 #include "coder.h"
 
 #define BLACK_MODE
-#define VERSION 19
+#define VERSION 17
 
 #if VERSION == 16
 #define QR_SIZE 586
@@ -28,7 +28,7 @@ const int MAX_PKT = QR_SIZE;
 const int MAX_PKT = QR_SIZE * 2;
 #endif
 
-enum class frame_type : unsigned char { INIT, DATA, ACK, END, MISS, META, METAACK };
+enum class frame_type : unsigned char { INIT=0xf0, DATA, ACK, END, MISS, META, METAACK };
 typedef unsigned short seq_nr;
 typedef unsigned char uchar;
 const int MAX_DATA = MAX_PKT - sizeof(frame_type) - sizeof(seq_nr);
