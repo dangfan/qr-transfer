@@ -47,9 +47,9 @@ void IOController::send(frame &left, frame &right) {
 	imshow("w", screen);
 }
 
-void IOController::showfps(double fps) {
-	char text[10];
-	sprintf(text, "%.2f fps", fps);
+void IOController::showfps(double fps, int counter) {
+	char text[20];
+	sprintf(text, "%.2f fps, %d", fps, counter);
 	Mat block = screen(Rect(0, 0, 1920, 135));
 	empty.copyTo(block);
 	putText(screen, text, Point(800, 100), 0, 3, Scalar(0), 5);

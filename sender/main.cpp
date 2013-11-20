@@ -46,7 +46,7 @@ void connect(IOController &controller, short num_packets, int size) {
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
 			if (++counter == 10) {
 				time(&end);
-				controller.showfps(difftime(end, start));
+				controller.showfps(10 / difftime(end, start), counter);
 				counter = 0;
 				start = end;
 			}
