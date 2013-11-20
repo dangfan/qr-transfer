@@ -72,6 +72,7 @@ void ack(IOController &controller, bool *r) {
 	frame_ack.seq = counter;
 	memcpy(frame_ack.data, lst, counter * sizeof(short));
 	controller.send(frame_ack, frame_ack);
+	controller.showmsg("ack");
 	delete[] lst;
 }
 
@@ -129,6 +130,7 @@ int main(int argc, char* args[]) {
 	char buffer[20];
 	sprintf(buffer, "%.2f KB/s", size / time / 1024);
 	controller.showmsg(buffer);
+	waitKey();
 
 	delete[] data;
 	delete[] received;
