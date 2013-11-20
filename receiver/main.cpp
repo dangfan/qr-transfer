@@ -11,35 +11,30 @@ using namespace cv;
 bool ready = false;
 int size, num_pkts;
 char filename[255];
+frame frame_a, frame_b;
 
 void onMouse(int event, int x, int y, int flags, void*) {
 	if (event != EVENT_LBUTTONDOWN) return;
 	ready = true;
 }
 
-void connect(IOController &controller) {
-	frame frame_a, frame_b;
-	memset(&frame_a, 0, sizeof(frame));
+void calibrate(IOController &controller) {
 	frame_a.type = frame_type::INIT;
 	controller.send(frame_a, frame_a);
 
 	int counter = 0;
-	time_t past[20], now;
+	time_t past[20];
 	char text[20];
 	memset(past, 0, sizeof(past));
 	while (!ready) {
 		controller.receive(frame_a, frame_b);
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
-			time(&now);
-			sprintf(text, "%.2f fps, %d", 20 / difftime(now, past[counter]), counter);
+			sprintf(text, "%.2f fps, %d", 20. / (clock() - past[counter]) * CLK_TCK, counter);
 			controller.showmsg(text);
-			past[counter] = now;
+			past[counter] = clock();
 			if (++counter == 20) {
 				counter = 0;
 			}
-			num_pkts = frame_a.seq;
-			size = *(int *)frame_a.data;
-			strcpy(filename, (char *)(frame_a.data + 4));
 		}
 	}
 }
@@ -72,7 +67,6 @@ void ack(IOController &controller, bool *r) {
 	frame_ack.seq = counter;
 	memcpy(frame_ack.data, lst, counter * sizeof(short));
 	controller.send(frame_ack, frame_ack);
-	controller.showmsg("ack");
 	delete[] lst;
 }
 
@@ -84,15 +78,34 @@ int main(int argc, char* args[]) {
 
 	IOController controller(width, height);
 	setMouseCallback("w", onMouse);
-	connect(controller);
+	calibrate(controller);
 
 	controller.showmsg("Ready to receive");
+
+	while (true) {
+		controller.receive(frame_a, frame_b);
+		if (frame_a.type == frame_type::META) {
+			num_pkts = frame_a.seq;
+			size = *(int *) frame_a.data;
+			strcpy(filename, (char *) (frame_a.data + 4));
+			break;
+		} else if (frame_b.type == frame_type::META) {
+			num_pkts = frame_b.seq;
+			size = *(int *) frame_b.data;
+			strcpy(filename, (char *) (frame_b.data + 4));
+			break;
+		}
+	}
+
+	controller.showmsg("Receiving");
+
+	frame_a.type = frame_type::ACK;
+	controller.send(frame_a, frame_a);
 
 	uchar *data = new uchar[size];
 	bool *received = new bool[num_pkts];
 	memset(received, 0, num_pkts * sizeof(bool));
 
-	frame frame_a, frame_b;
 	bool receiving = false;
 	time_t start;
 

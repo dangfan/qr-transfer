@@ -37,13 +37,9 @@ uchar *read_file(const char *filename, int &size, int &num_packets) {
 	return buf;
 }
 
-void connect(IOController &controller, short num_packets, int size, const char* filename) {
+void calibrate(IOController &controller) {
 	frame frame_a, frame_b;
-
 	frame_a.type = frame_type::INIT;
-	frame_a.seq = num_packets;
-	*(int *)frame_a.data = size;
-	strcpy((char *)(frame_a.data + 4), filename);
 	controller.send(frame_a, frame_a);
 
 	int counter = 0;
@@ -103,6 +99,21 @@ void setList(frame &f) {
 	}
 }
 
+void send_meta(IOController &controller, int num_pkts, int size, char *filename) {
+	frame a, b;
+	a.type = frame_type::META;
+	a.seq = num_pkts;
+	*(int *)a.data = size;
+	strcpy((char *) (a.data + 4), filename);
+	controller.send(a, a);
+	while (true) {
+		controller.receive(a, b);
+		if (a.type == frame_type::ACK || b.type == frame_type::ACK) {
+			break;
+		}
+	}
+}
+
 int main(int argc, char* args[]) {
 	if (argc != 5) return -1;
 
@@ -110,15 +121,15 @@ int main(int argc, char* args[]) {
 	int height = atoi(args[3]);
 	fps = 1000 / atoi(args[4]);
 
-	int size, num_packets;
-	uchar *data = read_file(args[1], size, num_packets);
-
 	IOController controller(width, height);
 	setMouseCallback("w", onMouse);
-	connect(controller, num_packets, size, args[1]);
-
+	calibrate(controller);
+	
 	controller.showmsg("Sending");
 
+	int size, num_packets;
+	uchar *data = read_file(args[1], size, num_packets);
+	send_meta(controller, num_packets, size, args[1]);
 	for (int i = 0; i != num_packets; ++i)
 		lst.push_back(i);
 
@@ -136,7 +147,7 @@ int main(int argc, char* args[]) {
 				break;
 			}
 		}
-		//if (waitKey(1) == 27) break;
+		if (waitKey(1) == 27) break;
 	}
 
 	delete[] data;
