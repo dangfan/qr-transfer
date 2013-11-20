@@ -39,16 +39,16 @@ void connect(IOController &controller, short num_packets, int size) {
 	controller.send(frame_a, frame_b);
 
 	int counter = 0;
-	time_t start, end;
-	time(&start);
+	time_t past[20], now;
+	memset(past, 0, sizeof(past));
 	while (true) {
 		controller.receive(frame_a, frame_b);
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
-			time(&end);
-			controller.showfps(counter / difftime(end, start), counter);
+			time(&now);
+			controller.showfps(20 / difftime(now, past[counter]), counter);
+			past[counter] = now;
 			if (++counter == 20) {
 				counter = 0;
-				start = end;
 			}
 		}
 		if (waitKey(5) == 32) break;
