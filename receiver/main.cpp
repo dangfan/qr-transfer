@@ -20,16 +20,16 @@ void connect(IOController &controller, int &size, int &num_pkt) {
 	while (true) {
 		controller.receive(frame_a, frame_b);
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
-			if (++counter == 10) {
-				time(&end);
-				controller.showfps(10 / difftime(end, start), counter);
+			time(&end);
+			controller.showfps(counter / difftime(end, start), counter);
+			if (++counter == 20) {
 				counter = 0;
 				start = end;
 			}
 			num_pkt = frame_a.seq;
 			size = *(int *)frame_a.data;
 		}
-		if (waitKey(10) == 32) break;
+		if (waitKey(5) == 32) break;
 	}
 }
 
