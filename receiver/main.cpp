@@ -39,7 +39,6 @@ void connect(IOController &controller) {
 			num_pkts = frame_a.seq;
 			size = *(int *)frame_a.data;
 		}
-		waitKey(10);
 	}
 }
 
@@ -71,7 +70,6 @@ void ack(IOController &controller, bool *r) {
 	frame_ack.seq = counter;
 	memcpy(frame_ack.data, lst, counter * sizeof(short));
 	controller.send(frame_ack, frame_ack);
-	waitKey(1);
 	delete[] lst;
 }
 
@@ -81,7 +79,6 @@ int main() {
 	connect(controller);
 
 	controller.showmsg("Ready to receive");
-	waitKey(1);
 
 	uchar *data = new uchar[size];
 	bool *received = new bool[num_pkts];

@@ -45,6 +45,7 @@ void IOController::send(frame &left, frame &right) {
 	dst = screen(Rect(1000, 135, m.cols, m.rows));
 	m.copyTo(dst);
 	imshow("w", screen);
+	waitKey(1);
 }
 
 void IOController::showmsg(const char *msg) {
@@ -52,6 +53,7 @@ void IOController::showmsg(const char *msg) {
 	empty.copyTo(block);
 	putText(screen, msg, Point(800, 100), 0, 3, Scalar(0), 5);
 	imshow("w", screen);
+	waitKey(1);
 }
 
 void IOController::showtime(double time) {
@@ -60,4 +62,5 @@ void IOController::showtime(double time) {
 	memset(screen.data, 0xff, 1080 * 1920);
 	putText(screen, text, Point(800, 400), 0, 5, Scalar(0), 8);
 	imshow("w", screen);
+	waitKey(1);
 }
