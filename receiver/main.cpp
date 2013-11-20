@@ -10,6 +10,7 @@ using namespace cv;
 
 bool ready = false;
 int size, num_pkts;
+char filename[255];
 
 void onMouse(int event, int x, int y, int flags, void*) {
 	if (event != EVENT_LBUTTONDOWN) return;
@@ -38,6 +39,7 @@ void connect(IOController &controller) {
 			}
 			num_pkts = frame_a.seq;
 			size = *(int *)frame_a.data;
+			strcpy(filename, (char *)(frame_a.data + 4));
 		}
 	}
 }
@@ -73,8 +75,13 @@ void ack(IOController &controller, bool *r) {
 	delete[] lst;
 }
 
-int main() {
-	IOController controller(640, 480);
+int main(int argc, char* args[]) {
+	if (argc != 3) return -1;
+
+	int width = atoi(args[1]);
+	int height = atoi(args[2]);
+
+	IOController controller(width, height);
 	setMouseCallback("w", onMouse);
 	connect(controller);
 
@@ -85,17 +92,27 @@ int main() {
 	memset(received, 0, num_pkts * sizeof(bool));
 
 	frame frame_a, frame_b;
+	bool receiving = false;
+	time_t start;
 
 	while (!finished(received)) {
 		while (true) {
 			controller.receive(frame_a, frame_b);
 			if (frame_a.type == frame_type::DATA) {
+				if (!receiving) {
+					receiving = true;
+					start = clock();
+				}
 				fill_data(frame_a, data, received);
 			} else if (frame_a.type == frame_type::END) {
 				break;
 			}
 			if (frame_b.type == frame_type::DATA) {
 				fill_data(frame_b, data, received);
+				if (!receiving) {
+					receiving = true;
+					start = clock();
+				}
 			} else if (frame_b.type == frame_type::END) {
 				break;
 			}
@@ -103,9 +120,15 @@ int main() {
 		ack(controller, received);
 	}
 
-	FILE *file = fopen("test.ico", "wb");
+	FILE *file = fopen(filename, "wb");
 	fwrite(data, sizeof(uchar), size, file);
 	fclose(file);
+
+	double time = (double) (clock() - start) / CLK_TCK;
+	controller.showtime(time);
+	char buffer[20];
+	sprintf(buffer, "%.2f KB/s", size / time / 1024);
+	controller.showmsg(buffer);
 
 	delete[] data;
 	delete[] received;
