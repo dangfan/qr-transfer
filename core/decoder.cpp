@@ -16,29 +16,30 @@ size_t Decoder::get_data(zbar::Image& img, uchar *buf) {
 }
 
 size_t Decoder::decode_black(cv::Mat& frame, uchar *buf, int length) {
-	uchar *tmp = new uchar[length * 2];
+	//uchar *tmp = new uchar[length * 2];
 
 	cvtColor(frame, frame, CV_BGR2GRAY);
 
 	zbar::Image image(frame.cols, frame.rows, "Y800", frame.data, frame.cols * frame.rows);
 	scanner.scan(image);
-	size_t ori_len = get_data(image, tmp);
-	if (!ori_len) {
-		delete[] tmp;
-		return 0;
-	}
+	return get_data(image, buf);
+	//size_t ori_len = get_data(image, tmp);
+	//if (!ori_len) {
+	//	delete[] tmp;
+	//	return 0;
+	//}
 
-	LPWSTR wbuf = new WCHAR[length];
-	int len = MultiByteToWideChar(CP_UTF8, 0, (LPCCH) tmp, ori_len, wbuf, length);
-	if (!len) return 0;
+	//LPWSTR wbuf = new WCHAR[length];
+	//int len = MultiByteToWideChar(CP_UTF8, 0, (LPCCH) tmp, ori_len, wbuf, length);
+	//if (!len) return 0;
 
-	for (int i = 0; i != len; ++i) {
-		buf[i] = (uchar) wbuf[i];
-	}
+	//for (int i = 0; i != len; ++i) {
+	//	buf[i] = (uchar) wbuf[i];
+	//}
 
-	delete[] tmp;
-	delete[] wbuf;
-	return len;
+	//delete[] tmp;
+	//delete[] wbuf;
+	//return len;
 }
 
 //Decoder::Decoder(bool debug)
