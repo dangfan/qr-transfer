@@ -40,6 +40,7 @@ uchar *read_file(const char *filename, int &size, int &num_packets) {
 
 void calibrate(IOController &controller) {
 	frame frame_a, frame_b;
+	memset(&frame_a, 0, sizeof(frame));
 	frame_a.type = frame_type::INIT;
 	controller.send(frame_a, frame_a);
 
