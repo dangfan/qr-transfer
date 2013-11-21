@@ -5,7 +5,7 @@
 #include "coder.h"
 
 #define BLACK_MODE
-#define VERSION 17
+#define VERSION 19
 
 #if VERSION == 16
 #define QR_SIZE 586
