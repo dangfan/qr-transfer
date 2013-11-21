@@ -42,7 +42,6 @@ void calibrate(IOController &controller) {
 	frame frame_a, frame_b;
 	frame_a.type = frame_type::INIT;
 	controller.send(frame_a, frame_a);
-	controller.showmsg("Not ready");
 
 	int counter = 0;
 	time_t past[20];

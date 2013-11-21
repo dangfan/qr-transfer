@@ -5,7 +5,7 @@
 #include "coder.h"
 
 #define BLACK_MODE
-#define VERSION 19
+#define VERSION 25
 
 #if VERSION == 16
 #define QR_SIZE 586
@@ -15,9 +15,17 @@
 #define QR_SIZE 718
 #elif VERSION == 19
 #define QR_SIZE 792
+#elif VERSION == 25
+#define QR_SIZE 1273
 #endif
 
-const int WIDTH = (VERSION * 4 + 17) * 10;
+#if VERSION <= 19
+#define SIZE 10
+#else
+#define SIZE 8
+#endif
+
+const int WIDTH = (VERSION * 4 + 17) * SIZE;
 const int TOP = (1080 - WIDTH) / 2 + 20;
 const int LEFT = (1920 - 2 * WIDTH) / 3;
 const int LEFT2 = LEFT * 2 + WIDTH;

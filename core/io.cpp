@@ -38,10 +38,10 @@ void IOController::receive(frame &left, frame &right) {
 
 void IOController::send(frame &left, frame &right) {
 	Mat m, dst;
-	encode_black((uchar *)&left, MAX_PKT, m);
+	encode_black((uchar *)&left, MAX_PKT, m, SIZE);
 	dst = screen(Rect(LEFT, TOP, m.cols, m.rows));
 	m.copyTo(dst);
-	encode_black((uchar *)&right, MAX_PKT, m);
+	encode_black((uchar *)&right, MAX_PKT, m, SIZE);
 	dst = screen(Rect(LEFT2, TOP, m.cols, m.rows));
 	m.copyTo(dst);
 	imshow("w", screen);
