@@ -15,7 +15,7 @@ size_t Decoder::get_data(zbar::Image& img, uchar *buf) {
 	return len;
 }
 
-size_t Decoder::decode_black(cv::Mat& frame, uchar *buf, int length) {
+size_t Decoder::decode(cv::Mat& frame, uchar *buf, int length) {
 	cvtColor(frame, frame, CV_BGR2GRAY);
 
 	zbar::Image image(frame.cols, frame.rows, "Y800", frame.data, frame.cols * frame.rows);

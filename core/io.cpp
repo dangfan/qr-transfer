@@ -29,19 +29,19 @@ void IOController::receive(frame &left, frame &right) {
 	cap >> pic;
 	split(pic, r, l);
 
-	if (!decoder.decode_black(l, (uchar *)&left, MAX_PKT))
+	if (!decoder.decode(l, (uchar *)&left, MAX_PKT))
 		left.type = frame_type::MISS;
 
-	if (!decoder.decode_black(r, (uchar *)&right, MAX_PKT))
+	if (!decoder.decode(r, (uchar *)&right, MAX_PKT))
 		right.type = frame_type::MISS;
 }
 
 void IOController::send(frame &left, frame &right) {
 	Mat m, dst;
-	encode_black((uchar *)&left, MAX_PKT, m, SIZE);
+	encode((uchar *)&left, MAX_PKT, m, SIZE);
 	dst = screen(Rect(LEFT, TOP, m.cols, m.rows));
 	m.copyTo(dst);
-	encode_black((uchar *)&right, MAX_PKT, m, SIZE);
+	encode((uchar *)&right, MAX_PKT, m, SIZE);
 	dst = screen(Rect(LEFT2, TOP, m.cols, m.rows));
 	m.copyTo(dst);
 	imshow("w", screen);

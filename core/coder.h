@@ -9,9 +9,9 @@ private:
 	zbar::ImageScanner scanner;
 	size_t get_data(zbar::Image& img, uchar *buf);
 public:
-	size_t decode_black(cv::Mat& frame, uchar *buf, int len);
+	size_t decode(cv::Mat& frame, uchar *buf, int len);
 };
 
-int encode_black(uchar *buf, size_t length, cv::Mat &m, int size = 10);
+void encode(uchar *buf, size_t length, cv::Mat &m, int size = 10);
 
 #endif

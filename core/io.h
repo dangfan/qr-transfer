@@ -4,19 +4,18 @@
 #include <opencv2/opencv.hpp>
 #include "coder.h"
 
-#define BLACK_MODE
 #define VERSION 25
 
 #if VERSION == 16
-#define QR_SIZE 586
+#define MAX_PKT 586
 #elif VERSION == 17
-#define QR_SIZE 644
+#define MAX_PKT 644
 #elif VERSION == 18
-#define QR_SIZE 718
+#define MAX_PKT 718
 #elif VERSION == 19
-#define QR_SIZE 792
+#define MAX_PKT 792
 #elif VERSION == 25
-#define QR_SIZE 1273
+#define MAX_PKT 1273
 #endif
 
 #if VERSION <= 19
@@ -29,12 +28,6 @@ const int WIDTH = (VERSION * 4 + 17) * SIZE;
 const int TOP = (1080 - WIDTH) / 2 + 20;
 const int LEFT = (1920 - 2 * WIDTH) / 3;
 const int LEFT2 = LEFT * 2 + WIDTH;
-
-#ifdef BLACK_MODE
-const int MAX_PKT = QR_SIZE;
-#else
-const int MAX_PKT = QR_SIZE * 2;
-#endif
 
 enum class frame_type : unsigned char { INIT=0xf0, DATA, ACK, END, MISS, META, METAACK };
 typedef unsigned short seq_nr;
