@@ -4,7 +4,6 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <zbar.h>
 #include <cstdlib>
-#include <windows.h>
 
 
 size_t Decoder::get_data(zbar::Image& img, uchar *buf) {
