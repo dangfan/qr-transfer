@@ -20,8 +20,8 @@ IOController::IOController(int width, int height)
 }
 
 void IOController::split(Mat &m, Mat &l, Mat &r) {
-	l = m(Rect(0, 0, m.cols / 2 + 25, m.rows));
-	r = m(Rect(m.cols / 2 - 25, 0, m.cols / 2 + 25, m.rows));
+	l = m(Rect(0, 0, m.cols / 2 + 25, m.rows)).clone();
+	r = m(Rect(m.cols / 2 - 25, 0, m.cols / 2 + 25, m.rows)).clone();
 }
 
 void IOController::receive(frame &left, frame &right) {
