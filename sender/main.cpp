@@ -40,7 +40,7 @@ uchar *read_file(const char *filename, int &size, int &num_packets) {
 
 	if (compressed) {
 		uLong bufLen;
-		uchar *compBuf = new uchar[size];
+		uchar *compBuf = new uchar[size * 2];
 		compress(compBuf, &bufLen, buf, size);
 		uchar *t = buf;
 		buf = compBuf;

@@ -133,6 +133,7 @@ int main(int argc, char* args[]) {
 	if (compressed) {
 		uncompress(buf, &bufLen, data, size);
 		uchar *t = buf; buf = data; data = t;
+		size = bufLen;
 	}
 
 	FILE *file = fopen(filename, "wb");
