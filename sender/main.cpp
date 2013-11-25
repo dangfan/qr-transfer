@@ -6,6 +6,9 @@
 #include <iostream>
 #include "coder.h"
 #include "io.h"
+#include "zlib.h"
+
+#pragma comment(lib, "../core/lib/zdll.lib")
 
 using namespace std;
 using namespace cv;
@@ -13,6 +16,7 @@ using namespace cv;
 vector<int> lst;
 bool ready = false;
 int fps;
+int compressed;
 
 void onMouse(int event, int x, int y, int flags, void*) {
 	if (event != EVENT_LBUTTONDOWN) return;
@@ -32,6 +36,17 @@ uchar *read_file(const char *filename, int &size, int &num_packets) {
 	
 	for (int i = 0; i != num_packets; ++i) {
 		fread(buf + (i * MAX_DATA), sizeof(uchar), MAX_DATA, fd);
+	}
+
+	if (compressed) {
+		uLong bufLen;
+		uchar *compBuf = new uchar[size];
+		compress(compBuf, &bufLen, buf, size);
+		uchar *t = buf;
+		buf = compBuf;
+		size = bufLen;
+		num_packets = (int) ceil((double) size / MAX_DATA);
+		delete[] t;
 	}
 
 	fclose(fd);
@@ -118,11 +133,12 @@ void send_meta(IOController &controller, int num_pkts, int size, char *filename)
 }
 
 int main(int argc, char* args[]) {
-	if (argc != 5) return -1;
+	if (argc != 6) return -1;
 
 	int width = atoi(args[2]);
 	int height = atoi(args[3]);
 	fps = 1000 / atoi(args[4]);
+	compressed = atoi(args[5]);
 
 	IOController controller(width, height);
 	setMouseCallback("w", onMouse);

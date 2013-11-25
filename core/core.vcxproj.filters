@@ -68,6 +68,7 @@
       <Filter>libqrencode</Filter>
     </ClInclude>
     <ClInclude Include="io.h" />
+    <ClInclude Include="zlib.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="libqrencode">

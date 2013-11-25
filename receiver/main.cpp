@@ -4,6 +4,9 @@
 #include <ctime>
 #include "coder.h"
 #include "io.h"
+#include "zlib.h"
+
+#pragma comment(lib, "../core/lib/zdll.lib")
 
 using namespace std;
 using namespace cv;
@@ -71,10 +74,11 @@ void ack(IOController &controller, bool *r) {
 }
 
 int main(int argc, char* args[]) {
-	if (argc != 3) return -1;
+	if (argc != 4) return -1;
 
 	int width = atoi(args[1]);
 	int height = atoi(args[2]);
+	int compressed = atoi(args[3]);
 
 	IOController controller(width, height);
 	setMouseCallback("w", onMouse);
@@ -124,6 +128,13 @@ int main(int argc, char* args[]) {
 		ack(controller, received);
 	}
 
+	uLong bufLen = size * 10;
+	uchar *buf = new uchar[bufLen];
+	if (compressed) {
+		uncompress(buf, &bufLen, data, size);
+		uchar *t = buf; buf = data; data = t;
+	}
+
 	FILE *file = fopen(filename, "wb");
 	fwrite(data, sizeof(uchar), size, file);
 	fclose(file);
@@ -137,5 +148,6 @@ int main(int argc, char* args[]) {
 
 	delete[] data;
 	delete[] received;
+	delete[] buf;
 	return 0;
 }

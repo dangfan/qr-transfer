@@ -38,6 +38,7 @@
     <ClInclude Include="libqrcode\qrspec.h" />
     <ClInclude Include="libqrcode\rscode.h" />
     <ClInclude Include="libqrcode\split.h" />
+    <ClInclude Include="zlib.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A77F5D30-841B-4767-9AC7-313EAD378B37}</ProjectGuid>

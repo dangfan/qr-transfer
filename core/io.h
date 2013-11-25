@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include "coder.h"
 
-#define VERSION 25
+#define VERSION 34
 
 #if VERSION == 16
 #define MAX_PKT 586
@@ -16,12 +16,20 @@
 #define MAX_PKT 792
 #elif VERSION == 25
 #define MAX_PKT 1273
+#elif VERSION == 29
+#define MAX_PKT 1628
+#elif VERSION == 34
+#define MAX_PKT 2188
 #endif
 
 #if VERSION <= 19
 #define SIZE 10
-#else
+#elif VERSION == 25
 #define SIZE 8
+#elif VERSION == 29
+#define SIZE 7
+#else
+#define SIZE 6
 #endif
 
 const int WIDTH = (VERSION * 4 + 17) * SIZE;
@@ -29,7 +37,7 @@ const int TOP = (1080 - WIDTH) / 2 + 20;
 const int LEFT = (1920 - 2 * WIDTH) / 3;
 const int LEFT2 = LEFT * 2 + WIDTH;
 
-enum class frame_type : unsigned char { INIT=0xf0, DATA, ACK, END, MISS, META, METAACK };
+enum class frame_type : unsigned char { INIT, DATA, ACK, END, MISS, META, METAACK };
 typedef unsigned short seq_nr;
 typedef unsigned char uchar;
 const int MAX_DATA = MAX_PKT - sizeof(frame_type) - sizeof(seq_nr);
