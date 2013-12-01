@@ -100,7 +100,12 @@ bool send(IOController &controller, uchar *data) {
 
 		waitKey(fps);
 	}
-
+	
+	frame_a.type = frame_type::END;
+	frame_b.type = frame_type::END;
+	controller.send(frame_a, frame_b);
+	waitKey(fps);
+	
 	return true;
 }
 

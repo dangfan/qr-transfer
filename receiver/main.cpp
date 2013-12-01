@@ -65,7 +65,7 @@ void ack(IOController &controller, bool *r) {
 			lst[counter++] = i;
 		}
 	}
-	if (counter > MAX_DATA / 2) counter = MAX_DATA;
+	if (counter > MAX_DATA / 2) counter = MAX_DATA / 2;
 	frame frame_ack;
 	frame_ack.type = frame_type::ACK;
 	frame_ack.seq = counter;
@@ -113,12 +113,18 @@ int main(int argc, char* args[]) {
 	memset(received, 0, num_pkts * sizeof(bool));
 
 	while (!finished(received)) {
-		controller.receive(frame_a, frame_b);
-		if (frame_a.type == frame_type::DATA) {
-			fill_data(frame_a, data, received);
-		}
-		if (frame_b.type == frame_type::DATA) {
-			fill_data(frame_b, data, received);
+		while (true) {
+			controller.receive(frame_a, frame_b);
+			if (frame_a.type == frame_type::DATA) {
+				fill_data(frame_a, data, received);
+			} else if (frame_a.type == frame_type::END) {
+				break;
+			}
+			if (frame_b.type == frame_type::DATA) {
+				fill_data(frame_b, data, received);
+			} else if (frame_b.type == frame_type::END) {
+				break;
+			}
 		}
 		ack(controller, received);
 	}
