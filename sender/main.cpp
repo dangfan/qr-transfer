@@ -21,6 +21,7 @@ int compressed;
 void onMouse(int event, int x, int y, int flags, void*) {
 	if (event != EVENT_LBUTTONDOWN) return;
 	ready = true;
+	destroyWindow("calibration");
 }
 
 uchar *read_file(const char *filename, int &size, int &num_packets) {
@@ -58,7 +59,6 @@ void calibrate(IOController &controller) {
 	memset(&frame_a, 0, sizeof(frame));
 	frame_a.type = frame_type::INIT;
 	controller.send(frame_a, frame_a);
-	frame_a.type = frame_b.type = frame_type::MISS;
 
 	int counter = 0;
 	time_t past[20];

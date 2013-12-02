@@ -20,6 +20,9 @@ IOController::IOController(int width, int height)
 	namedWindow("w", CV_WINDOW_NORMAL);
 	setWindowProperty("w", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 	imshow("w", screen);
+	namedWindow("calibration", CV_WINDOW_NORMAL);
+	resizeWindow("calibration", 320, 240);
+	moveWindow("calibration", 800, 420);
 }
 
 void IOController::split(Mat &m, Mat &l, Mat &r) {
@@ -46,6 +49,8 @@ void IOController::fill_data(frame &f) {
 void IOController::receive_sync(frame &left, frame &right) {
 	Mat pic, l, r;
 	cap >> pic;
+	imshow("calibration", pic);
+	waitKey(10);
 	split(pic, r, l);
 	if (!decoder.decode(l, (uchar *)&left, MAX_PKT))
 		left.type = frame_type::MISS;
