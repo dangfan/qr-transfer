@@ -60,12 +60,19 @@ public:
 	void send(frame &left, frame &right);
 	void showmsg(const char *msg);
 	void showtime(double time);
+	void set_info(int num_pkts, int size, uchar *data, bool *received);
+	bool stop;
+	uchar *data;
+	bool *received;
 private:
 	cv::VideoCapture cap;
 	cv::Mat screen;
 	cv::Mat empty;
 	Decoder decoder;
+	int num_pkts;
+	int size;
 	void split(cv::Mat &m, cv::Mat &l, cv::Mat &r);
+	void fill_data(frame &f);
 };
 
 #endif

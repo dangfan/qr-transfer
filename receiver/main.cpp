@@ -42,15 +42,6 @@ void calibrate(IOController &controller) {
 	}
 }
 
-void fill_data(frame &f, uchar *data, bool *received) {
-	if (f.seq == num_pkts - 1) { // last frame
-		memcpy(data + f.seq * MAX_DATA, f.data, size - f.seq * MAX_DATA);
-	} else { // normal frame
-		memcpy(data + f.seq * MAX_DATA, f.data, MAX_DATA);
-	}
-	received[f.seq] = true;
-}
-
 bool finished(bool *r) {
 	for (int i = 0; i != num_pkts; ++i)
 		if (!r[i]) return false;
@@ -111,20 +102,12 @@ int main(int argc, char* args[]) {
 	uchar *data = new uchar[size];
 	bool *received = new bool[num_pkts];
 	memset(received, 0, num_pkts * sizeof(bool));
+	controller.set_info(num_pkts, size, data, received);
 
 	while (!finished(received)) {
-		while (true) {
+		controller.stop = false;
+		while (!controller.stop) {
 			controller.receive(frame_a, frame_b);
-			if (frame_a.type == frame_type::DATA) {
-				fill_data(frame_a, data, received);
-			} else if (frame_a.type == frame_type::END) {
-				break;
-			}
-			if (frame_b.type == frame_type::DATA) {
-				fill_data(frame_b, data, received);
-			} else if (frame_b.type == frame_type::END) {
-				break;
-			}
 		}
 		ack(controller, received);
 	}
