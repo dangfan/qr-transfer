@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sender", "sender\sender.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "camera-test", "camera-test\camera-test.vcxproj", "{2EBEBB4C-74D6-4E45-AB86-2DA3D47DC6CB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "agent", "agent\agent.vcxproj", "{13091EA9-1892-4039-A23C-3581DDA2469E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,10 @@ Global
 		{2EBEBB4C-74D6-4E45-AB86-2DA3D47DC6CB}.Debug|Win32.Build.0 = Debug|Win32
 		{2EBEBB4C-74D6-4E45-AB86-2DA3D47DC6CB}.Release|Win32.ActiveCfg = Release|Win32
 		{2EBEBB4C-74D6-4E45-AB86-2DA3D47DC6CB}.Release|Win32.Build.0 = Release|Win32
+		{13091EA9-1892-4039-A23C-3581DDA2469E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{13091EA9-1892-4039-A23C-3581DDA2469E}.Debug|Win32.Build.0 = Debug|Win32
+		{13091EA9-1892-4039-A23C-3581DDA2469E}.Release|Win32.ActiveCfg = Release|Win32
+		{13091EA9-1892-4039-A23C-3581DDA2469E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
