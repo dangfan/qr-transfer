@@ -68,13 +68,11 @@ void ack(IOController &controller, bool *r) {
 }
 
 int main(int argc, char* args[]) {
-	if (argc != 4) return -1;
+	if (argc != 3) return -1;
 
-	int width = atoi(args[1]);
-	int height = atoi(args[2]);
-	int compressed = atoi(args[3]);
+	int compressed = atoi(args[2]);
 
-	IOController controller(width, height);
+	IOController controller(640, 480);
 	setMouseCallback("w", onMouse);
 	calibrate(controller);
 
@@ -122,7 +120,10 @@ int main(int argc, char* args[]) {
 		size = bufLen;
 	}
 
-	FILE *file = fopen(filename, "wb");
+	char new_name[100];
+	strcpy(new_name, args[1]);
+	strcat(new_name, filename);
+	FILE *file = fopen(new_name, "wb");
 	fwrite(data, sizeof(uchar), size, file);
 	fclose(file);
 

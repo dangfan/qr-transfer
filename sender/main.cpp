@@ -135,14 +135,12 @@ void send_meta(IOController &controller, int num_pkts, int size, char *filename)
 }
 
 int main(int argc, char* args[]) {
-	if (argc != 6) return -1;
+	if (argc != 4) return -1;
 
-	int width = atoi(args[2]);
-	int height = atoi(args[3]);
-	fps = 1000 / atoi(args[4]);
-	compressed = atoi(args[5]);
+	fps = 1000 / atoi(args[2]);
+	compressed = atoi(args[3]);
 
-	IOController controller(width, height);
+	IOController controller(640, 480);
 	setMouseCallback("w", onMouse);
 	calibrate(controller);
 	
