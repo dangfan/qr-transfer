@@ -57,11 +57,12 @@ class IOController {
 public:
 	IOController(int width, int height);
 	void receive(frame &left, frame &right);
-	void receive_sync(frame &left, frame &right);
+	cv::Mat receive_sync(frame &left, frame &right);
 	void send(frame &left, frame &right);
 	void showmsg(const char *msg);
 	void showtime(double time);
 	void set_info(int num_pkts, int size, uchar *data, bool *received);
+	void set_pic(cv::Mat &pic);
 	bool stop;
 	uchar *data;
 	bool *received;

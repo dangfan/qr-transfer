@@ -19,7 +19,6 @@ frame frame_a, frame_b;
 void onMouse(int event, int x, int y, int flags, void*) {
 	if (event != EVENT_LBUTTONDOWN) return;
 	ready = true;
-	destroyWindow("calibration");
 }
 
 void calibrate(IOController &controller) {
@@ -31,7 +30,8 @@ void calibrate(IOController &controller) {
 	char text[20];
 	memset(past, 0, sizeof(past));
 	while (!ready) {
-		controller.receive_sync(frame_a, frame_b);
+		Mat pic = controller.receive_sync(frame_a, frame_b);
+		controller.set_pic(pic);
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
 			sprintf(text, "%.2f fps, %d", 20. / (clock() - past[counter]) * CLK_TCK, counter);
 			controller.showmsg(text);

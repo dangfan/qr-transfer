@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ppltasks.h>
 #include <array>
+#include <Windows.h>
 #include "io.h"
 #include "coder.h"
 
@@ -20,9 +21,6 @@ IOController::IOController(int width, int height)
 	namedWindow("w", CV_WINDOW_NORMAL);
 	setWindowProperty("w", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 	imshow("w", screen);
-	namedWindow("calibration", CV_WINDOW_NORMAL);
-	resizeWindow("calibration", 133, 100);
-	moveWindow("calibration", 0, 0);
 }
 
 void IOController::split(Mat &m, Mat &l, Mat &r) {
@@ -46,16 +44,24 @@ void IOController::fill_data(frame &f) {
 	received[f.seq] = true;
 }
 
-void IOController::receive_sync(frame &left, frame &right) {
+void IOController::set_pic(Mat &pic) {
+	cvtColor(pic, pic, CV_BGR2GRAY);
+	Mat dst;
+	resize(pic, dst, Size(160, 118));
+	dst.copyTo(screen(Rect(880, 600, 160, 118)));
+	imshow("w", screen);
+	waitKey(1);
+}
+
+Mat IOController::receive_sync(frame &left, frame &right) {
 	Mat pic, l, r;
 	cap >> pic;
-	imshow("calibration", pic);
-	waitKey(10);
 	split(pic, r, l);
 	if (!decoder.decode(l, (uchar *)&left, MAX_PKT))
 		left.type = frame_type::MISS;
 	if (!decoder.decode(r, (uchar *)&right, MAX_PKT))
 		right.type = frame_type::MISS;
+	return pic;
 }
 
 void IOController::receive(frame &left, frame &right) {
