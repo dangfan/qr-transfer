@@ -183,6 +183,7 @@ int main(int argc, char* args[]) {
 	fwrite(data, sizeof(uchar), size, file);
 	fclose(file);
 	
+	controller.clear();
 	ready = false;
 	calibrate(controller);
 	controller.showmsg("Sending");
