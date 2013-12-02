@@ -33,7 +33,7 @@
 #endif
 
 const int WIDTH = (VERSION * 4 + 17) * SIZE;
-const int TOP = (1080 - WIDTH) / 2 + 20;
+const int TOP = (1080 - WIDTH) / 2 + 30;
 const int LEFT = (1920 - 2 * WIDTH) / 3;
 const int LEFT2 = LEFT * 2 + WIDTH;
 

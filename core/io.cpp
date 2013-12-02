@@ -21,8 +21,8 @@ IOController::IOController(int width, int height)
 	setWindowProperty("w", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
 	imshow("w", screen);
 	namedWindow("calibration", CV_WINDOW_NORMAL);
-	resizeWindow("calibration", 320, 240);
-	moveWindow("calibration", 800, 420);
+	resizeWindow("calibration", 133, 100);
+	moveWindow("calibration", 0, 0);
 }
 
 void IOController::split(Mat &m, Mat &l, Mat &r) {
