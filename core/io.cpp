@@ -43,6 +43,16 @@ void IOController::fill_data(frame &f) {
 	received[f.seq] = true;
 }
 
+void IOController::receive_sync(frame &left, frame &right) {
+	Mat pic, l, r;
+	cap >> pic;
+	split(pic, r, l);
+	if (!decoder.decode(l, (uchar *)&left, MAX_PKT))
+		left.type = frame_type::MISS;
+	if (!decoder.decode(r, (uchar *)&right, MAX_PKT))
+		right.type = frame_type::MISS;
+}
+
 void IOController::receive(frame &left, frame &right) {
 	Mat pic, l, r;
 	cap >> pic;

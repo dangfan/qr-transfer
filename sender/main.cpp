@@ -65,7 +65,7 @@ void calibrate(IOController &controller) {
 	char text[20];
 	memset(past, 0, sizeof(past));
 	while (!ready) {
-		controller.receive(frame_a, frame_b);
+		controller.receive_sync(frame_a, frame_b);
 		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
 			sprintf(text, "%.2f fps, %d", 20. / (clock() - past[counter]) * CLK_TCK, counter);
 			controller.showmsg(text);

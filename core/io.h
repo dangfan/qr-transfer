@@ -57,6 +57,7 @@ class IOController {
 public:
 	IOController(int width, int height);
 	void receive(frame &left, frame &right);
+	void receive_sync(frame &left, frame &right);
 	void send(frame &left, frame &right);
 	void showmsg(const char *msg);
 	void showtime(double time);
