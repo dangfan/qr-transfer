@@ -58,6 +58,7 @@ void calibrate(IOController &controller) {
 	memset(&frame_a, 0, sizeof(frame));
 	frame_a.type = frame_type::INIT;
 	controller.send(frame_a, frame_a);
+	frame_a.type = frame_b.type = frame_type::MISS;
 
 	int counter = 0;
 	time_t past[20];

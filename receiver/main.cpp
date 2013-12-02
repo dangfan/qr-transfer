@@ -24,6 +24,7 @@ void onMouse(int event, int x, int y, int flags, void*) {
 void calibrate(IOController &controller) {
 	frame_a.type = frame_type::INIT;
 	controller.send(frame_a, frame_a);
+	frame_a.type = frame_b.type = frame_type::MISS;
 
 	int counter = 0;
 	time_t past[20];
