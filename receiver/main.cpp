@@ -41,6 +41,7 @@ void calibrate(IOController &controller) {
 			}
 		}
 	}
+	controller.clear();
 }
 
 bool finished(bool *r) {

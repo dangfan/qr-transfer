@@ -75,6 +75,7 @@ void calibrate(IOController &controller) {
 			}
 		}
 	}
+	controller.clear();
 }
 
 bool send(IOController &controller, uchar *data) {

@@ -63,6 +63,7 @@ public:
 	void showtime(double time);
 	void set_info(int num_pkts, int size, uchar *data, bool *received);
 	void set_pic(cv::Mat &pic);
+	void clear();
 	bool stop;
 	uchar *data;
 	bool *received;

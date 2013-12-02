@@ -43,6 +43,7 @@ void calibrate(IOController &controller) {
 			}
 		}
 	}
+	controller.clear();
 }
 
 bool finished(bool *r) {
@@ -153,7 +154,6 @@ int main(int argc, char* args[]) {
 	}
 
 	controller.showmsg("Receiving");
-	time_t start = clock();
 
 	frame_a.type = frame_type::METAACK;
 	controller.send(frame_a, frame_a);
@@ -186,7 +186,7 @@ int main(int argc, char* args[]) {
 	ready = false;
 	calibrate(controller);
 	controller.showmsg("Sending");
-	send_meta(controller, num_pkts, size, args[1]);
+	send_meta(controller, num_pkts, size, filename);
 	for (int i = 0; i != num_pkts; ++i)
 		lst.push_back(i);
 

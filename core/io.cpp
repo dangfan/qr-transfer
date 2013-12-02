@@ -23,6 +23,10 @@ IOController::IOController(int width, int height)
 	imshow("w", screen);
 }
 
+void IOController::clear() {
+	memset(screen.data, 0xff, 1080 * 1920);
+}
+
 void IOController::split(Mat &m, Mat &l, Mat &r) {
 	l = m(Rect(0, 0, m.cols / 2 + 25, m.rows)).clone();
 	r = m(Rect(m.cols / 2 - 25, 0, m.cols / 2 + 25, m.rows)).clone();
