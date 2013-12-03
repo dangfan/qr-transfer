@@ -15,26 +15,29 @@ using namespace cv;
 
 vector<int> lst;
 bool ready = false;
-int fps;
-int compressed;
+int fps, compressed;
+int size, num_pkts;
+frame a, b;
+uchar *data;
+char *filename;
 
 void onMouse(int event, int x, int y, int flags, void*) {
 	if (event != EVENT_LBUTTONDOWN) return;
 	ready = true;
 }
 
-uchar *read_file(const char *filename, int &size, int &num_packets) {
+void read_file() {
 	FILE *fd = fopen(filename, "rb");
 	
 	fseek(fd, 0, SEEK_END);
 	size = ftell(fd);
 	fseek(fd, 0, SEEK_SET);
 
-	num_packets = (int) ceil((double) size / MAX_DATA);
-	uchar *buf =  new uchar[MAX_DATA * num_packets];
-	memset(buf, 0, MAX_DATA * num_packets);
+	num_pkts = (int) ceil((double) size / MAX_DATA);
+	uchar *buf =  new uchar[MAX_DATA * num_pkts];
+	memset(buf, 0, MAX_DATA * num_pkts);
 	
-	for (int i = 0; i != num_packets; ++i) {
+	for (int i = 0; i != num_pkts; ++i) {
 		fread(buf + (i * MAX_DATA), sizeof(uchar), MAX_DATA, fd);
 	}
 
@@ -45,28 +48,28 @@ uchar *read_file(const char *filename, int &size, int &num_packets) {
 		uchar *t = buf;
 		buf = compBuf;
 		size = bufLen;
-		num_packets = (int) ceil((double) size / MAX_DATA);
+		num_pkts = (int) ceil((double) size / MAX_DATA);
 		delete[] t;
 	}
 
 	fclose(fd);
-	return buf;
+	data = buf;
 }
 
 void calibrate(IOController &controller) {
-	frame frame_a, frame_b;
-	memset(&frame_a, 0, sizeof(frame));
-	frame_a.type = frame_type::INIT;
-	controller.send(frame_a, frame_a);
-
+	a.type = frame_type::INIT;
+	a.seq = num_pkts;
+	*(int *)a.data = size;
+	strcpy((char *) (a.data + 4), filename);
+	controller.send(a, a);
 	int counter = 0;
 	time_t past[20];
 	char text[20];
 	memset(past, 0, sizeof(past));
 	while (!ready) {
-		Mat pic = controller.receive_sync(frame_a, frame_b);
+		Mat pic = controller.receive_sync(a, b);
 		controller.set_pic(pic);
-		if (frame_a.type == frame_type::INIT && frame_b.type == frame_type::INIT) {
+		if (a.type == frame_type::INIT && b.type == frame_type::INIT) {
 			sprintf(text, "%.2f fps, %d", 20. / (clock() - past[counter]) * CLK_TCK, counter);
 			controller.showmsg(text);
 			past[counter] = clock();
@@ -81,93 +84,73 @@ void calibrate(IOController &controller) {
 bool send(IOController &controller, uchar *data) {
 	if (lst.empty()) return false;
 
-	frame frame_a, frame_b;
-
-	for (vector<int>::iterator p = lst.begin(); p != lst.end(); ++p) {
-		frame_a.type = frame_type::DATA;
-		frame_a.seq = *p;
-		memcpy(frame_a.data, data + *p * MAX_DATA, MAX_DATA);
+	for (auto p = lst.begin(); p != lst.end(); ++p) {
+		a.type = frame_type::DATA;
+		a.seq = *p;
+		memcpy(a.data, data + *p * MAX_DATA, MAX_DATA);
 
 		if (++p == lst.end()) {
-			frame_b.type = frame_type::END;
-			controller.send(frame_a, frame_b);
+			b.type = frame_type::END;
+			controller.send(a, b);
 			waitKey(fps);
 			return true;
 		} else {
-			frame_b.type = frame_type::DATA;
-			frame_b.seq = *p;
-			memcpy(frame_b.data, data + *p * MAX_DATA, MAX_DATA);
-			controller.send(frame_a, frame_b);
+			b.type = frame_type::DATA;
+			b.seq = *p;
+			memcpy(b.data, data + *p * MAX_DATA, MAX_DATA);
+			controller.send(a, b);
 		}
 
 		waitKey(fps);
 	}
 	
-	frame_a.type = frame_type::END;
-	frame_b.type = frame_type::END;
-	controller.send(frame_a, frame_b);
+	a.type = frame_type::END;
+	b.type = frame_type::END;
+	controller.send(a, b);
 	waitKey(fps);
 	
 	return true;
 }
 
 void setList(frame &f) {
-	short len = f.seq;
 	lst.clear();
+	short len = f.seq;
 	for (int i = 0; i != len; ++i) {
 		lst.push_back(*((short *) f.data + i));
 	}
 }
 
-void send_meta(IOController &controller, int num_pkts, int size, char *filename) {
-	frame a, b;
-	a.type = frame_type::META;
-	a.seq = num_pkts;
-	*(int *)a.data = size;
-	strcpy((char *) (a.data + 4), filename);
-	controller.send(a, a);
-	while (true) {
-		controller.receive(a, b);
-		if (a.type == frame_type::METAACK || b.type == frame_type::METAACK) {
-			break;
-		}
-	}
-}
-
 int main(int argc, char* args[]) {
 	if (argc != 4) return -1;
-
+	filename = args[1];
 	fps = 1000 / atoi(args[2]);
 	compressed = atoi(args[3]);
+	read_file();
 
 	IOController controller(640, 480);
 	setMouseCallback("w", onMouse);
+
+process:
+	controller.clear();
 	calibrate(controller);
-	
 	controller.showmsg("Sending");
-
-	int size, num_packets;
-	uchar *data = read_file(args[1], size, num_packets);
-	send_meta(controller, num_packets, size, args[1]);
-	for (int i = 0; i != num_packets; ++i)
+	lst.clear();
+	for (int i = 0; i != num_pkts; ++i)
 		lst.push_back(i);
-
-	frame frame_a, frame_b;
 
 	while (true) {
 		if (!send(controller, data)) break;
 		while (true) {
-			controller.receive(frame_a, frame_b);
-			if (frame_a.type == frame_type::ACK) {
-				setList(frame_a);
+			controller.receive(a, b);
+			if (a.type == frame_type::ACK) {
+				setList(a);
 				break;
-			} else if (frame_b.type == frame_type::ACK) {
-				setList(frame_b);
+			} else if (b.type == frame_type::ACK) {
+				setList(b);
 				break;
 			}
-			if (waitKey(1) == 27) {
-				delete[] data;
-				return 0;
+			if (waitKey(1) == 32) {
+				goto process;
 			}
 		}
 	}
