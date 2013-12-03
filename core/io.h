@@ -37,7 +37,7 @@ const int TOP = (1080 - WIDTH) / 2 + 30;
 const int LEFT = (1920 - 2 * WIDTH) / 3;
 const int LEFT2 = LEFT * 2 + WIDTH;
 
-enum class frame_type : unsigned char { INIT, DATA, ACK, END, MISS, META, METAACK };
+enum class frame_type : unsigned char { INIT, DATA, ACK, END, MISS };
 typedef unsigned short seq_nr;
 typedef unsigned char uchar;
 const int MAX_DATA = MAX_PKT - sizeof(frame_type) - sizeof(seq_nr);

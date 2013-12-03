@@ -53,6 +53,7 @@ void calibrate_with_meta(IOController &controller) {
 	*(int *)a.data = size;
 	strcpy((char *) (a.data + 4), filename);
 	controller.send(a, a);
+	a.type = b.type = frame_type::MISS;
 	int counter = 0;
 	time_t past[20];
 	char text[20];
