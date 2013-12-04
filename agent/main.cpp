@@ -136,7 +136,7 @@ void setList(frame &f) {
 int main(int argc, char* args[]) {
 	if (argc != 4) return -1;
 
-	fps = atoi(args[2]);
+	fps = 1000 / atoi(args[2]);
 	int compressed = atoi(args[3]);
 
 	IOController controller(640, 480);
