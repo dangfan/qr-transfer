@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include "coder.h"
 
-#define VERSION 21
+#define VERSION 22
 
 #if VERSION == 16
 #define MAX_PKT 586
@@ -16,24 +16,20 @@
 #define MAX_PKT 792
 #elif VERSION == 21
 #define MAX_PKT 929
+#elif VERSION == 22
+#define MAX_PKT 1003
+#elif VERSION == 23
+#define MAX_PKT 1091
 #elif VERSION == 25
 #define MAX_PKT 1273
-#elif VERSION == 29
-#define MAX_PKT 1628
-#elif VERSION == 34
-#define MAX_PKT 2188
 #endif
 
 #if VERSION <= 19
 #define SIZE 10
-#elif VERSION == 21
+#elif VERSION <= 23
 #define SIZE 9
-#elif VERSION == 25
+#elif VERSION <= 25
 #define SIZE 8
-#elif VERSION == 29
-#define SIZE 7
-#else
-#define SIZE 6
 #endif
 
 const int WIDTH = (VERSION * 4 + 17) * SIZE;
