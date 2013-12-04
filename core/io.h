@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include "coder.h"
 
-#define VERSION 22
+#define VERSION 21
 
 #if VERSION == 16
 #define MAX_PKT 586
