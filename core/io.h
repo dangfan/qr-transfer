@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include "coder.h"
 
-#define VERSION 25
+#define VERSION 21
 
 #if VERSION == 16
 #define MAX_PKT 586
@@ -14,6 +14,8 @@
 #define MAX_PKT 718
 #elif VERSION == 19
 #define MAX_PKT 792
+#elif VERSION == 21
+#define MAX_PKT 929
 #elif VERSION == 25
 #define MAX_PKT 1273
 #elif VERSION == 29
@@ -24,6 +26,8 @@
 
 #if VERSION <= 19
 #define SIZE 10
+#elif VERSION == 21
+#define SIZE 9
 #elif VERSION == 25
 #define SIZE 8
 #elif VERSION == 29
